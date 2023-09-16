@@ -1,0 +1,16 @@
+current directory: /Users/marcelolopes/RubyProjects/TheLoopChallenge/vendor/bundle/ruby/3.0.0/gems/debug-1.8.0/ext/debug
+/Users/marcelolopes/.rbenv/versions/3.0.0/bin/ruby -I /Users/marcelolopes/.rbenv/versions/3.0.0/lib/ruby/3.0.0 -r ./siteconf20230916-39300-tomzw4.rb extconf.rb
+creating Makefile
+
+current directory: /Users/marcelolopes/RubyProjects/TheLoopChallenge/vendor/bundle/ruby/3.0.0/gems/debug-1.8.0/ext/debug
+make "DESTDIR=" clean
+
+current directory: /Users/marcelolopes/RubyProjects/TheLoopChallenge/vendor/bundle/ruby/3.0.0/gems/debug-1.8.0/ext/debug
+make "DESTDIR="
+compiling debug.c
+compiling iseq_collector.c
+linking shared-object debug/debug.bundle
+
+current directory: /Users/marcelolopes/RubyProjects/TheLoopChallenge/vendor/bundle/ruby/3.0.0/gems/debug-1.8.0/ext/debug
+make "DESTDIR=" install
+/usr/bin/install -c -m 0755 debug.bundle ./.gem.20230916-39300-7ur0l/debug

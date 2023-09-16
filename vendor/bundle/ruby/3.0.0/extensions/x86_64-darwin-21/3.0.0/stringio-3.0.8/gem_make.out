@@ -1,0 +1,15 @@
+current directory: /Users/marcelolopes/RubyProjects/TheLoopChallenge/vendor/bundle/ruby/3.0.0/gems/stringio-3.0.8/ext/stringio
+/Users/marcelolopes/.rbenv/versions/3.0.0/bin/ruby -I /Users/marcelolopes/.rbenv/versions/3.0.0/lib/ruby/3.0.0 -r ./siteconf20230916-39300-d8gbdl.rb extconf.rb
+creating Makefile
+
+current directory: /Users/marcelolopes/RubyProjects/TheLoopChallenge/vendor/bundle/ruby/3.0.0/gems/stringio-3.0.8/ext/stringio
+make "DESTDIR=" clean
+
+current directory: /Users/marcelolopes/RubyProjects/TheLoopChallenge/vendor/bundle/ruby/3.0.0/gems/stringio-3.0.8/ext/stringio
+make "DESTDIR="
+compiling stringio.c
+linking shared-object stringio.bundle
+
+current directory: /Users/marcelolopes/RubyProjects/TheLoopChallenge/vendor/bundle/ruby/3.0.0/gems/stringio-3.0.8/ext/stringio
+make "DESTDIR=" install
+/usr/bin/install -c -m 0755 stringio.bundle ./.gem.20230916-39300-58tuc9
