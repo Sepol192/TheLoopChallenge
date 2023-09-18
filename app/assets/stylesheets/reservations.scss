@@ -1,0 +1,55 @@
+.welcome-header{
+    margin-top: 10%;
+    text-align: center;
+}
+
+.reservation-header{
+    text-align: center;
+}
+
+.reservation-body {
+    text-align: center;
+}
+
+.reservation-body {
+    text-align: center;
+}
+
+.seats-div {
+    border: solid 1px black;
+    width: fit-content;
+    height: fit-content;
+    margin: 10px auto;
+    display: grid;
+    grid-template-columns: repeat(25, 1fr);
+}
+
+.seat {
+    width: 30px;
+    height: 30px;
+    margin: 2px;
+    border-radius: 50%;
+}
+
+.seat-ex {
+    width: 30px;
+    height: 30px;
+    margin: 2px;
+    border-radius: 50%;
+}
+
+.seat-free{
+    background-color: green;
+}
+
+.seat-selected{
+    background-color: grey;
+}
+
+.seat-selected-other{
+    background-color: #ff2f2575;
+}
+
+.seat-reserved{
+    background-color: red;
+}

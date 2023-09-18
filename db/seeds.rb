@@ -5,3 +5,9 @@
 #
 #   movies = Movie.create([{ name: "Star Wars" }, { name: "Lord of the Rings" }])
 #   Character.create(name: "Luke", movie: movies.first)
+
+("A".."T").each do |letter|
+    (1..25).each do |number|
+        Seat.find_or_create_by(state:"free", seat_number: "#{number}", row: "#{letter}")
+    end
+end

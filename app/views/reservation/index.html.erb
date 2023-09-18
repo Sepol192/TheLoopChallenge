@@ -1,0 +1,228 @@
+<header class="reservation-header">
+    <div>
+        <h1>
+            RESERVA DE LUGARES
+        </h1>
+    </div>
+</header>
+
+<div class="show-options">
+    <div class="show-option">
+        <div class="seat-ex center-vert" style="background-color: green;"></div>
+        <p class="center-vert">Lugares livres</p>
+    </div>
+    <div class="show-option">
+        <div class="seat-ex center-vert" style="background-color: grey;"></div>
+        <p class="center-vert">Lugares selecionados</p>
+    </div>
+    <div class="show-option">
+        <div class="seat-ex center-vert" style="background-color: #ff2f2575;"></div>
+        <p class="center-vert">Lugares selecionados por outros utilizadores</p>
+    </div>
+    <div class="show-option">
+        <div class="seat-ex center-vert" style="background-color: red;"></div>
+        <p class="center-vert">Lugares reservados</p>
+    </div>
+</div>
+
+<button id="reset-button">Apagar todas as reservas</button>
+
+<body class="reservation-body">
+
+    <div class="seats-div">
+        <% @seats.each do |seat| %>
+            <div class="seat seat-<%= seat.state %>" data-id="<%= seat.id %>" data-session="<%= seat.session_token %>">
+            </div>
+        <% end %>
+    </div>
+    <input type="text" id="name" placeholder="Nome" maxlength="100" required>
+    <input type="email" id="email" placeholder="Email" maxlength="100" required>
+    <button id="reserve-button">Reservar lugares selecionados</button>
+
+</body>
+
+<script>
+
+    $(document).ready(function() {
+        $('.seat').each(function(){
+            if (($(this).data("session") != sessionStorage.getItem('tabToken')) && $(this).hasClass('seat-selected')){
+                $(this).css("background-color","#ff2f2575");
+            }
+        });
+
+        $('#reset-button').on('click', function() {
+            resetAllSeats();
+            deleteAllReservations();
+        });
+
+        $('.seat').on('click', function() {
+            var seat = $(this);
+            var seatId = seat.data('id');
+
+            if (seat.hasClass('seat-reserved')) {
+                return;
+            }
+
+            let tabToken = sessionStorage.getItem('tabToken');
+
+            if (!tabToken) {9
+                const uniqueToken = generateUniqueToken(10);
+                sessionStorage.setItem('tabToken', uniqueToken);
+                tabToken = sessionStorage.getItem('tabToken');
+            }
+            
+            // sessionStorage.removeItem('tabToken');
+            
+            if (seat.hasClass('seat-selected')) {
+                if (seat.data("session") != sessionStorage.getItem('tabToken')) {
+                    return;
+                }
+                
+                seat.removeClass('seat-selected').addClass('seat-free');
+                seat.data( "session", "" );
+
+                $.ajax({
+                    url: '/update_seat_state',
+                    method: 'POST',
+                    headers: {
+                        'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    data: { seat_id: seatId, state: 'free' },
+                    success: function(response) {
+                    },
+                    error: function(error) {
+                    }
+                });
+            } else {
+                seat.removeClass('seat-free').addClass('seat-selected');
+                seat.data( "session", sessionStorage.getItem('tabToken') );
+
+                $.ajax({
+                    url: '/update_seat_state',
+                    method: 'POST',
+                    headers: {
+                        'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    data: { seat_id: seatId, state: 'selected', session_token: sessionStorage.getItem('tabToken') },
+                    success: function(response) {
+                    },
+                    error: function(error) {
+                    }
+                });
+            }
+        });
+
+        $('#reserve-button').on('click', function(e) {
+            e.preventDefault();
+            
+            var selectedSeats = $('.seat-selected');
+
+            var name = $('#name').val();
+            var email = $('#email').val();
+            
+            if (selectedSeats.length > 0) {
+                selectedSeats.each(function() {
+                    if ($(this).data("session") == sessionStorage.getItem('tabToken')){
+                       $(this).removeClass('seat-selected').addClass('seat-reserved');
+                    }
+                });
+                
+                selectedSeats.each(function() {
+                    if ($(this).data("session") == sessionStorage.getItem('tabToken')){
+                        var seatId = $(this).data('id');
+                        $.ajax({
+                            url: '/update_seat_state',
+                            headers: {
+                                'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
+                            },
+                            method: 'POST',
+                            data: { seat_id: seatId, state: 'reserved' },
+                            success: function(response) {
+                                createReservation(name, email, seatId);
+                            },
+                            error: function(error) {
+                            }
+                        });
+                    }
+                });
+            }
+        });
+
+        function createReservation(name, email, seatId) {
+            $.ajax({
+                url: '/create_reservation',
+                method: 'POST',
+                headers: {
+                    'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
+                },
+                data: { reservation_name: name, reservation_email: email, seat_id: seatId },
+                success: function(response) {
+                },
+                error: function(error) {
+                }
+            });
+        }
+
+        function resetAllSeats() {
+            $.ajax({
+                url: '/reset_all_seats',
+                method: 'POST',
+                headers: {
+                    'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
+                },
+                data: { state: 'free', reset_seats: true },
+                success: function(response) {
+                    $('.seat').removeClass('seat-selected seat-selected_other seat-reserved').addClass('seat-free');
+                },
+                error: function(error) {
+                }
+            });
+        }
+        function deleteAllReservations() {
+            $.ajax({
+                url: '/delete_all_reservations',
+                method: 'DELETE',
+                headers: {
+                    'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
+                },
+                success: function(response) {
+                },
+                error: function(error) {
+                }
+            });
+        }
+
+        function generateUniqueToken(length) {
+            const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+            let token = '';
+            for (let i = 0; i < length; i++) {
+            const randomIndex = Math.floor(Math.random() * characters.length);
+            token += characters.charAt(randomIndex);
+            }
+            return token;
+        }
+    });
+
+</script>
+
+<style>
+
+.show-options{
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    margin: 10px;
+}
+
+.show-option{
+    display: grid;
+    grid-template-columns: 0.1fr 1fr;
+}
+
+.center-vert{
+    margin-top: auto;
+    margin-bottom: auto;
+}
+
+
+</style>
+
