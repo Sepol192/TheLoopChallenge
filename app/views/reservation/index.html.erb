@@ -31,7 +31,7 @@
 
     <div class="seats-div">
         <% @seats.each do |seat| %>
-            <div class="seat seat-<%= seat.state %>" data-id="<%= seat.id %>" data-session="<%= seat.session_token %>">
+            <div class="seat seat-<%= seat.state %>" data-id="<%= seat.id %>" data-session="<%= seat.session_token %>" title="<%= seat.reservation.present? ? (seat.reservation.reservation_name + '; ' + seat.reservation.reservation_email) : '' %>">
             </div>
         <% end %>
     </div>

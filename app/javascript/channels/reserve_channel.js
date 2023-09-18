@@ -25,6 +25,9 @@ $(document).ready(function() {
       if (seatElement.length) {
         seatElement.removeClass('seat-free seat-selected seat-selected_other seat-reserved').addClass("seat-" + newState);
       }
+      if (newState == "reserved" ){
+        seatElement.prop("title", data.reservation_name + '; ' + data.reservation_email);
+      }
       if (data.session_token != sessionStorage.getItem('tabToken') && seatElement.hasClass("seat-selected")){
         seatElement.css("background-color","#ff2f2575");
       } else {

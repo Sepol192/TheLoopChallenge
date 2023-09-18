@@ -4,7 +4,9 @@ class SeatController < ApplicationController
         new_state = params[:state]
 
         if seat.update(state: new_state, session_token: (new_state == "free" ? "" : params[:session_token]))
-            ActionCable.server.broadcast('reserve_channel', { seat_id: seat.id, state: new_state, session_token: params[:session_token] })
+            if new_state != "reserved"
+                ActionCable.server.broadcast('reserve_channel', { seat_id: seat.id, state: new_state, session_token: params[:session_token] })
+            end
             head :no_content
         else
             render json: { errors: seat.errors.full_messages }, status: :unprocessable_entity
@@ -17,6 +19,7 @@ class SeatController < ApplicationController
         seat_id = params[:seat_id]
         
         reservation = Reservation.create(reservation_name: name, reservation_email: email, seat_id: seat_id)
+        ActionCable.server.broadcast('reserve_channel', { seat_id: seat_id.to_i, reservation_name: name, reservation_email: email, state: "reserved" })
         
         if reservation.save
             render json: { message: "Reservation created successfully" }
