@@ -119,6 +119,11 @@
 
             var name = $('#name').val();
             var email = $('#email').val();
+
+            if (!name || !email) {
+                alert('Por favor preencha o campo do nome e do email.');
+                return;
+            }
             
             if (selectedSeats.length > 0) {
                 selectedSeats.each(function() {
